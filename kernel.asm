@@ -838,8 +838,26 @@ init_q5:;quinta questão
 	call loading_app
 	call initVideo
 
-	setText 4, 3, stringImpressa, yellowColor
-	;call draw_esc_button
+	
+    xor ax,ax
+    xor bx,bx 
+
+    mov ah,00h
+    mov al,13h
+    int 10h
+    
+	xor ax,ax
+
+    mov bh,0
+    mov bl,0xf
+    
+    mov di, numeroLido
+    call get_input
+
+    mov si, numeroLido
+    call stoi  
+
+    setText 1, 0, stringImpressa, ax
 
 	exitq5:
 		call getchar
