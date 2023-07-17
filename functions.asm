@@ -15,6 +15,20 @@
 	call printf_color
 %endmacro
 
+%macro getInput 0
+    pusha
+        mov bx,lightGrey
+        call get_input
+    popa
+%endmacro
+
+%macro setOutput 0
+    pusha
+        mov bx,lightGrey
+        call putchar
+    popa
+%endmacro
+
 gets:
     xor cx, cx
     .loop1:
