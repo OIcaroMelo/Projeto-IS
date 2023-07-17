@@ -2,7 +2,7 @@ _questao1:
     setText 2, 0, enunciado1, 7
     call endl
     mov di, valor
-    call get_input
+    getInput
     mov si, valor
     call stoi
 
@@ -41,23 +41,23 @@ _questao1:
     cmp ax, 10
     je .print10
     add ax, 48
-    call putchar
+    setOutput
     jmp .done5
     .print10:
-        setText 7, 0, printf10, 7
+        setText 7, 0, printf10, lightGrey
         jmp .done5
     .done5:
-        setText 8, 0, vazio, 7
+        setText 8, 0, vazio, lightGrey
     ret
 
 _questao2:
-    setText 2, 0, enunciado2, 7
+    setText 2, 0, enunciado2, lightGrey
     call endl
 
     mov di, maior
-    call get_input
+    getInput
     mov di, menor
-    call get_input
+    getInput
 
     mov si, menor
     lodsb
@@ -68,17 +68,17 @@ _questao2:
     ret
 
 _questao3:
-    setText 2, 0, enunciado3, 7
+    setText 2, 0, enunciado3, lightGrey
     call endl
 
 	mov di, string
-    call get_input
+    getInput
     mov si, string
     call stoi
     push ax
 
     mov di, string
-    call get_input
+    getInput
     mov si, string
     call stoi
     pop bx
@@ -88,7 +88,7 @@ _questao3:
     push bx
 
     mov di, string
-    call get_input
+    getInput
     mov si, string
     call stoi
     push ax
@@ -105,7 +105,7 @@ _questao3:
     push ax
 
     mov di, string
-    call get_input
+    getInput
     mov si, string
     call stoi
     pop bx
@@ -124,42 +124,30 @@ _questao3:
     div bx
     push dx
 
-    setText 10, 0, string4, yellowColor
+    setText 10, 0, string4, lightGrey
     pop dx
     pop ax
 	push dx
 	add ax, 48
-    call putchar
+    setOutput
 
     pop dx
     cmp dx, 1
     je .diff
     .equal:
-        setText 10, 13, string2, 7
+        setText 10, 13, string2, lightGrey
         ret
     .diff:
-		setText 10, 13, string3, 7
+		setText 10, 13, string3, lightGrey
         ret
 
 _questao5:
-    xor ax,ax
-    xor bx,bx 
-
-    mov ah,00h
-    mov al,13h
-    int 10h
     
-	xor ax,ax
-
-    mov bh,0
-    mov bl,0xf
-
-    setText 2, 0, enunciado5, 7
+    setText 2, 0, enunciado5, lightGrey
     call endl
     
     mov di, numeroLido
-    call get_input
-
+    getInput
     mov si, numeroLido
     call stoi  
 
