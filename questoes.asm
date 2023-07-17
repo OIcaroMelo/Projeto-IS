@@ -7,8 +7,17 @@ string4 db "Resultado: " , 0
 valor db 0, 0, 0, 0
 valor2 db 0, 0, 0, 0
 
+
+stringImpressa db "Como e facil trocar a cor", 0
+numeroLido db 0,0,0
+
 _questao3:
-    mov ax, 0
+
+    xor ax,ax
+    xor bx,bx
+    xor cx,cx
+    xor dx,dx
+    
     mov ds, ax
 
     mov ah, 0
@@ -17,7 +26,7 @@ _questao3:
 
     mov ah, 0xb
     mov bh, 0
-    mov bl, 1
+    mov bl, 0
     int 10h
 
     mov si, string1
@@ -68,7 +77,7 @@ _questao3:
     push ax
     pop bx
     pop ax
-    div cx
+    ;div cx
     add ax, bx
     pop cx
     add ax, cx
@@ -99,6 +108,31 @@ _questao3:
         call printString
         ret
 
+_questao05:
+
+    xor ax,ax
+    xor bx,bx 
+
+    mov ah,00h
+    mov al,13h
+    int 10h
+    
+
+    mov bh,0
+    mov bl,0xf
+    
+    mov di, numeroLido
+    call gets
+
+    mov si, numeroLido
+    call stoi  
+
+    mov si,stringImpressa
+    mov bh,0
+    mov bl,al
+    call printString
+
+    ret
 _questao6:
     mov di, valor
     call gets

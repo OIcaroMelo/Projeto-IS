@@ -48,6 +48,51 @@ stoi:
         jmp .loop1
     .endloop1:
 	ret
+reverse:
+    mov di, si
+    xor cx, cx
+    .loop1:
+        lodsb
+        cmp al, 0
+        je .endloop1
+        inc cl
+        push ax
+        jmp .loop1
+    .endloop1:
+    .loop2:
+        cmp cl, 0
+        je .endloop2
+        dec cl
+        pop ax
+        stosb
+        jmp .loop2
+    .endloop2:
+	ret
+        
+tostring:
+    push di
+    .loop1:
+        cmp ax, 0
+        je .endloop1
+        xor dx, dx
+        mov bx, 10
+        div bx
+        xchg ax, dx
+        add ax, 48
+        stosb
+        xchg ax, dx
+        jmp .loop1
+    .endloop1:      
+        pop si
+        cmp si, di
+        jne .done
+        mov al, 48
+        stosb
+    .done:
+        mov al, 0
+        stosb
+        call reverse
+	ret
 ;
 start:
 	call initVideo
@@ -604,6 +649,60 @@ init_q1:
 	call draw_esc_button;isso aqui é só um botão de esc, puramente estético
 
     ;------ coloque o código abaixo desse linha -------
+	xor ax,ax
+	xor bx,bx
+	xor cx,cx
+	xor dx,dx
+
+	mov ah,00h
+    mov al,13h
+    int 10h
+
+    mov bh,0
+    mov bl,0xf
+
+
+	mov di, valor
+    call get_input
+    mov si, valor
+    call stoi
+
+    xor bx,bx
+	xor cx,cx
+
+    jmp .loop3
+    .loop3:
+        cmp ax, 0
+        je .endloop3
+        cmp bx, 0
+        je .aux
+        cmp cx, 0
+        je .aux2
+        add bx, cx
+        pop cx
+        push bx
+        dec ax
+        jmp .loop3
+        .aux:
+            inc bx
+            dec ax
+            push bx
+            jmp .loop3
+        .aux2:
+            inc cx
+            dec ax
+            push cx
+            jmp .loop3
+    .endloop3:
+        pop ax
+
+    mov bx, 11
+    div bx
+    mov ax, dx
+
+    mov di, valor2
+    call tostring
+    setText 9, 0, valor, 15
 
     ;------ final da questão ------
 
@@ -681,17 +780,16 @@ init_q3:;terceira questão
     
     mov ds, ax
 
-	mov ah, 0
-    ;mov bh, 10h
+	mov ah,00h
+    mov al,13h
     int 10h
 
-    ;mov ah, 0xb
-    ;mov bh, 0
-    ;mov bl, 0
-    ;int 10h
-
-    
-    setText 0, 0, string1, 0 
+    xor ax,ax
+    xor bx,bx
+    xor cx,cx
+    xor dx,dx
+	
+    setText 0, 0, string1, 15 
     call endl
 
     mov di, string
@@ -712,7 +810,8 @@ init_q3:;terceira questão
 
     mov di, string
     call get_input
-    mov si, string
+
+	mov si, string
     call stoi
     push ax
     pop bx
@@ -747,7 +846,7 @@ init_q3:;terceira questão
     div bx
     push dx
 
-    setText 9, 0, string4, yellowColor
+    setText 9, 0, string4, 15
     pop dx
     pop ax
     push dx
@@ -757,11 +856,11 @@ init_q3:;terceira questão
     cmp dx, 1
     je .diff
     .equal:
-        setText 9, 10, string2, 0
-        ret
+        setText 9, 10, string2, 15
+		jmp exitq3
     .diff:
-	setText 9, 10, string2, 0
-        ret
+		setText 9, 10, string2, 15
+		jmp exitq3
 	;
 	exitq3:
 		call getchar
@@ -980,7 +1079,8 @@ data:;aqui é onde eu coloquei os nomes nas caixas de seleção
 ;de certa forma é desnecessário, então rlx
 
 	; Questão 1
-
+	valor db 0, 0, 0, 0
+	valor2 db 0, 0, 0, 0
 	; Questão 2
 
 	; Questão 3
