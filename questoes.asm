@@ -1,3 +1,55 @@
+_questao1:
+    setText 2, 0, enunciado1, 7
+    call endl
+    mov di, valor
+    call get_input
+    mov si, valor
+    call stoi
+
+    mov bx, 0
+    mov cx, 0
+
+    jmp .loop3
+    .loop3:
+        cmp ax, 0
+        je .endloop3
+        cmp bx, 0
+        je .aux
+        cmp cx, 0
+        je .aux2
+        add bx, cx
+        pop cx
+        push bx
+        dec ax
+        jmp .loop3
+        .aux:
+            inc bx
+            dec ax
+            push bx
+            jmp .loop3
+        .aux2:
+            inc cx
+            dec ax
+            push cx
+            jmp .loop3
+    .endloop3:
+        pop ax
+
+    mov bx, 11
+    div bx
+    mov ax, dx
+    cmp ax, 10
+    je .print10
+    add ax, 48
+    call putchar
+    jmp .done5
+    .print10:
+        setText 7, 0, printf10, 7
+        jmp .done5
+    .done5:
+        setText 8, 0, vazio, 7
+    ret
+
 _questao2:
     setText 2, 0, enunciado2, 7
     call endl
@@ -113,56 +165,4 @@ _questao5:
 
     setText 6, 0, stringImpressa, ax
 
-    ret
-
-_questao1:
-    setText 2, 0, enunciado1, 7
-    call endl
-    mov di, valor
-    call get_input
-    mov si, valor
-    call stoi
-
-    mov bx, 0
-    mov cx, 0
-
-    jmp .loop3
-    .loop3:
-        cmp ax, 0
-        je .endloop3
-        cmp bx, 0
-        je .aux
-        cmp cx, 0
-        je .aux2
-        add bx, cx
-        pop cx
-        push bx
-        dec ax
-        jmp .loop3
-        .aux:
-            inc bx
-            dec ax
-            push bx
-            jmp .loop3
-        .aux2:
-            inc cx
-            dec ax
-            push cx
-            jmp .loop3
-    .endloop3:
-        pop ax
-
-    mov bx, 11
-    div bx
-    mov ax, dx
-    cmp ax, 10
-    je .print10
-    add ax, 48
-    call putchar
-    jmp .done5
-    .print10:
-        setText 7, 0, printf10, 7
-        jmp .done5
-    .done5:
-        setText 8, 0, vazio, 7
     ret
