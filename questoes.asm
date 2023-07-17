@@ -1,37 +1,32 @@
-string db 0, 0
-string1 db "Digite os valores de X, Y, Z e W, respectivamente, para entao efetuar o calculo de (X*Y)+(Z*W)-(X/Z)+(W/Y) e retornar se seu resultado e par ou impar." , 0
-string2 db " -> Par" , 0
-string3 db " -> Impar" , 0
-string4 db "Resultado: " , 0
-
-valor db 0, 0, 0, 0
-valor2 db 0, 0, 0, 0
-
-_questao3:
-    mov ax, 0
-    mov ds, ax
-
-    mov ah, 0
-    mov bh, 10h
-    int 10h
-
-    mov ah, 0xb
-    mov bh, 0
-    mov bl, 1
-    int 10h
-
-    mov si, string1
-    call printString
+_questao2:
+    setText 2, 0, enunciado2, 7
     call endl
 
-    mov di, string
-    call gets
+    mov di, maior
+    call get_input
+    mov di, menor
+    call get_input
+
+    mov si, menor
+    lodsb
+    mov dl, al
+
+    mov si, maior
+    call comp
+    ret
+
+_questao3:
+    setText 2, 0, enunciado3, 7
+    call endl
+
+	mov di, string
+    call get_input
     mov si, string
     call stoi
     push ax
 
     mov di, string
-    call gets
+    call get_input
     mov si, string
     call stoi
     pop bx
@@ -41,7 +36,7 @@ _questao3:
     push bx
 
     mov di, string
-    call gets
+    call get_input
     mov si, string
     call stoi
     push ax
@@ -58,7 +53,7 @@ _questao3:
     push ax
 
     mov di, string
-    call gets
+    call get_input
     mov si, string
     call stoi
     pop bx
@@ -77,31 +72,54 @@ _questao3:
     div bx
     push dx
 
-    mov si, string4
-    call printString
+    setText 10, 0, string4, yellowColor
     pop dx
     pop ax
-    push dx
-    mov di, string
-    call tostring
-    mov si, string
-    call printString
+	push dx
+	add ax, 48
+    call putchar
 
     pop dx
     cmp dx, 1
     je .diff
     .equal:
-        mov si, string2
-        call printString
+        setText 10, 13, string2, 7
         ret
     .diff:
-        mov si, string3
-        call printString
+		setText 10, 13, string3, 7
         ret
 
-_questao6:
+_questao5:
+    xor ax,ax
+    xor bx,bx 
+
+    mov ah,00h
+    mov al,13h
+    int 10h
+    
+	xor ax,ax
+
+    mov bh,0
+    mov bl,0xf
+
+    setText 2, 0, enunciado5, 7
+    call endl
+    
+    mov di, numeroLido
+    call get_input
+
+    mov si, numeroLido
+    call stoi  
+
+    setText 6, 0, stringImpressa, ax
+
+    ret
+
+_questao1:
+    setText 2, 0, enunciado1, 7
+    call endl
     mov di, valor
-    call gets
+    call get_input
     mov si, valor
     call stoi
 
@@ -137,10 +155,14 @@ _questao6:
     mov bx, 11
     div bx
     mov ax, dx
-
-    mov di, valor2
-    call tostring
-    mov si, valor2
-    call printString
-
+    cmp ax, 10
+    je .print10
+    add ax, 48
+    call putchar
+    jmp .done5
+    .print10:
+        setText 7, 0, printf10, 7
+        jmp .done5
+    .done5:
+        setText 8, 0, vazio, 7
     ret
