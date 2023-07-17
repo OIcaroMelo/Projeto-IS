@@ -4,6 +4,7 @@ jmp 0x0000:start
 %define blackColor 0
 %define darkGreenColor 2
 %define redColor 4
+%define lightGrey 7
 %define greenColor 10
 %define yellowColor 14
 %define whiteColor 15
