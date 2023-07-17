@@ -1,141 +1,8 @@
-string db 0, 0
-string1 db "Digite os valores de X, Y, Z e W, respectivamente, para entao efetuar o calculo de (X*Y)+(Z*W)-(X/Z)+(W/Y) e retornar se seu resultado e par ou impar." , 0
-string2 db " -> Par" , 0
-string3 db " -> Impar" , 0
-string4 db "Resultado: " , 0
-
-valor db 0, 0, 0, 0
-valor2 db 0, 0, 0, 0
-
-
-stringImpressa db "Como e facil trocar a cor", 0
-numeroLido db 0,0,0
-
-_questao3:
-
-    xor ax,ax
-    xor bx,bx
-    xor cx,cx
-    xor dx,dx
-    
-    mov ds, ax
-
-    mov ah, 0
-    mov bh, 10h
-    int 10h
-
-    mov ah, 0xb
-    mov bh, 0
-    mov bl, 0
-    int 10h
-
-    mov si, string1
-    call printString
+_questao1:
+    setText 2, 0, enunciado1, 7
     call endl
-
-    mov di, string
-    call gets
-    mov si, string
-    call stoi
-    push ax
-
-    mov di, string
-    call gets
-    mov si, string
-    call stoi
-    pop bx
-    push ax
-    mul bx
-    push ax
-    push bx
-
-    mov di, string
-    call gets
-    mov si, string
-    call stoi
-    push ax
-    pop bx
-    pop ax
-    pop cx
-    push bx
-    div bx
-    sub cx, ax
-    pop ax
-    pop bx
-    push cx
-    push bx
-    push ax
-
-    mov di, string
-    call gets
-    mov si, string
-    call stoi
-    pop bx
-    pop cx
-    push ax
-    mul bx
-    push ax
-    pop bx
-    pop ax
-    ;div cx
-    add ax, bx
-    pop cx
-    add ax, cx
-    push ax
-    mov bx, 2
-    div bx
-    push dx
-
-    mov si, string4
-    call printString
-    pop dx
-    pop ax
-    push dx
-    mov di, string
-    call tostring
-    mov si, string
-    call printString
-
-    pop dx
-    cmp dx, 1
-    je .diff
-    .equal:
-        mov si, string2
-        call printString
-        ret
-    .diff:
-        mov si, string3
-        call printString
-        ret
-
-_questao05:
-
-    xor ax,ax
-    xor bx,bx 
-
-    mov ah,00h
-    mov al,13h
-    int 10h
-    
-
-    mov bh,0
-    mov bl,0xf
-    
-    mov di, numeroLido
-    call gets
-
-    mov si, numeroLido
-    call stoi  
-
-    mov si,stringImpressa
-    mov bh,0
-    mov bl,al
-    call printString
-
-    ret
-_questao6:
     mov di, valor
-    call gets
+    getInput
     mov si, valor
     call stoi
 
@@ -171,10 +38,119 @@ _questao6:
     mov bx, 11
     div bx
     mov ax, dx
+    cmp ax, 10
+    je .print10
+    add ax, 48
+    setOutput
+    jmp .done5
+    .print10:
+        setText 7, 0, printf10, lightGrey
+        jmp .done5
+    .done5:
+        setText 8, 0, vazio, lightGrey
+    ret
 
-    mov di, valor2
-    call tostring
-    mov si, valor2
-    call printString
+_questao2:
+    setText 2, 0, enunciado2, lightGrey
+    call endl
+
+    mov di, maior
+    getInput
+    mov di, menor
+    getInput
+
+    mov si, menor
+    lodsb
+    mov dl, al
+
+    mov si, maior
+    call comp
+    ret
+
+_questao3:
+    setText 2, 0, enunciado3, lightGrey
+    call endl
+
+	mov di, string
+    getInput
+    mov si, string
+    call stoi
+    push ax
+
+    mov di, string
+    getInput
+    mov si, string
+    call stoi
+    pop bx
+    push ax
+    mul bx
+    push ax
+    push bx
+
+    mov di, string
+    getInput
+    mov si, string
+    call stoi
+    push ax
+    pop bx
+    pop ax
+    pop cx
+    push bx
+    div bx
+    sub cx, ax
+    pop ax
+    pop bx
+    push cx
+    push bx
+    push ax
+
+    mov di, string
+    getInput
+    mov si, string
+    call stoi
+    pop bx
+    pop cx
+    push ax
+    mul bx
+    push ax
+    pop bx
+    pop ax
+    div cx
+    add ax, bx
+    pop cx
+    add ax, cx
+    push ax
+    mov bx, 2
+    div bx
+    push dx
+
+    setText 10, 0, string4, lightGrey
+    pop dx
+    pop ax
+	push dx
+	add ax, 48
+    setOutput
+
+    pop dx
+    cmp dx, 1
+    je .diff
+    .equal:
+        setText 10, 13, string2, lightGrey
+        ret
+    .diff:
+		setText 10, 13, string3, lightGrey
+        ret
+
+_questao5:
+    
+    setText 2, 0, enunciado5, lightGrey
+    call endl
+    
+    mov di, numeroLido
+    getInput
+    mov si, numeroLido
+    call stoi  
+
+    setText 6, 0, stringImpressa, ax
 
     ret

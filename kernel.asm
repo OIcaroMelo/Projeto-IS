@@ -4,96 +4,20 @@ jmp 0x0000:start
 %define blackColor 0
 %define darkGreenColor 2
 %define redColor 4
+%define lightGrey 7
 %define greenColor 10
 %define yellowColor 14
 %define whiteColor 15
-;%include "functions.asm"
-;%include "questoes.asm"
-%macro setText 4
-	mov ah, 02h  
-	mov bh, 0    
-	mov dh, %1   
-	mov dl, %2   
-	int 10h
-	mov bx, %4
-	mov si, %3
-	call printf_color
-%endmacro
 
-%macro simplePrintf 2
-	mov bx, %2
-	mov si, %1
-	call printf_color
-%endmacro
-
+%include "functions.asm"
+%include "questoes.asm"
+%include "data.asm"
 
 ;olá amigo, vamos começar nossa jornada aqui
 ;os bagulho ai em cima são algumas definições que usei para pintar a manga e etc
 ;esse start ai em baixo só faz carregar a animação bunitinha da manga e tals
 ;
-stoi:
-    xor cx, cx
-    xor ax, ax
-    .loop1:
-        push ax
-        lodsb
-        mov cl, al
-        pop ax
-        cmp cl, 0
-        je .endloop1
-        sub cl, 48
-        mov bx, 10
-        mul bx
-        add ax, cx
-        jmp .loop1
-    .endloop1:
-	ret
-reverse:
-    mov di, si
-    xor cx, cx
-    .loop1:
-        lodsb
-        cmp al, 0
-        je .endloop1
-        inc cl
-        push ax
-        jmp .loop1
-    .endloop1:
-    .loop2:
-        cmp cl, 0
-        je .endloop2
-        dec cl
-        pop ax
-        stosb
-        jmp .loop2
-    .endloop2:
-	ret
-        
-tostring:
-    push di
-    .loop1:
-        cmp ax, 0
-        je .endloop1
-        xor dx, dx
-        mov bx, 10
-        div bx
-        xchg ax, dx
-        add ax, 48
-        stosb
-        xchg ax, dx
-        jmp .loop1
-    .endloop1:      
-        pop si
-        cmp si, di
-        jne .done
-        mov al, 48
-        stosb
-    .done:
-        mov al, 0
-        stosb
-        call reverse
-	ret
-;
+
 start:
 	call initVideo
 	call login
@@ -245,11 +169,6 @@ cursorApp:
 	call cursor_app1
 	drawer yellowColor
 	ret
-
-getchar:
-  mov ah, 00h
-  int 16h
-  ret
 
 initVideo:
 	mov ah, 00h
@@ -646,67 +565,14 @@ init_q1:
 	call loading_app;isso aqui é o gráfico fofo da manga
 	call initVideo
 	;call draw_mango;manga fofa
-	call draw_esc_button;isso aqui é só um botão de esc, puramente estético
+	;call draw_esc_button;isso aqui é só um botão de esc, puramente estético
 
     ;------ coloque o código abaixo desse linha -------
-	xor ax,ax
-	xor bx,bx
-	xor cx,cx
-	xor dx,dx
-
-	mov ah,00h
-    mov al,13h
-    int 10h
-
-    mov bh,0
-    mov bl,0xf
-
-
-	mov di, valor
-    call get_input
-    mov si, valor
-    call stoi
-
-    xor bx,bx
-	xor cx,cx
-
-    jmp .loop3
-    .loop3:
-        cmp ax, 0
-        je .endloop3
-        cmp bx, 0
-        je .aux
-        cmp cx, 0
-        je .aux2
-        add bx, cx
-        pop cx
-        push bx
-        dec ax
-        jmp .loop3
-        .aux:
-            inc bx
-            dec ax
-            push bx
-            jmp .loop3
-        .aux2:
-            inc cx
-            dec ax
-            push cx
-            jmp .loop3
-    .endloop3:
-        pop ax
-
-    mov bx, 11
-    div bx
-    mov ax, dx
-
-    mov di, valor2
-    call tostring
-    setText 9, 0, valor, 15
 
     ;------ final da questão ------
-
+	call _questao1
 	exitq1: ;isso aqui serve pra checar de o usuário apertou esc, se sim ele volta para o menu
+		call draw_esc_button
 		call getchar
 		cmp al, 27
 	je menu
@@ -735,11 +601,11 @@ ret
 init_q2:;segunda questão
 	call loading_app
 	call initVideo
-	call draw_mango
-
-	call draw_esc_button
+	;call draw_mango
+	call _questao2
 
 	exitq2:
+		call draw_esc_button
 		call getchar
 		cmp al, 27
 	je menu
@@ -770,112 +636,16 @@ init_q3:;terceira questão
 	
 	call loading_app
 	call initVideo
-	call draw_esc_button
+	;call draw_esc_button
 	;call draw_mango
 	;
-	xor ax,ax
-    xor bx,bx
-    xor cx,cx
-    xor dx,dx
-    
-    mov ds, ax
-
-	mov ah,00h
-    mov al,13h
-    int 10h
-
-    xor ax,ax
-    xor bx,bx
-    xor cx,cx
-    xor dx,dx
-	
-    setText 0, 0, string1, 15 
-    call endl
-
-    mov di, string
-    call get_input
-    mov si, string
-    call stoi
-    push ax
-
-    mov di, string
-    call get_input
-    mov si, string
-    call stoi
-    pop bx
-    push ax
-    mul bx
-    push ax
-    push bx
-
-    mov di, string
-    call get_input
-
-	mov si, string
-    call stoi
-    push ax
-    pop bx
-    pop ax
-    pop cx
-    push bx
-    div bx
-    sub cx, ax
-    pop ax
-    pop bx
-    push cx
-    push bx
-    push ax
-
-    mov di, string
-    call get_input
-    mov si, string
-    call stoi
-    pop bx
-    pop cx
-    push ax
-    mul bx
-    push ax
-    pop bx
-    pop ax
-    div cx
-    add ax, bx
-    pop cx
-    add ax, cx
-    push ax
-    mov bx, 2
-    div bx
-    push dx
-
-    setText 9, 0, string4, 15
-    pop dx
-    pop ax
-    push dx
-
-
-    pop dx
-    cmp dx, 1
-    je .diff
-    .equal:
-        setText 9, 10, string2, 15
-		jmp exitq3
-    .diff:
-		setText 9, 10, string2, 15
-		jmp exitq3
-	;
+	call _questao3
 	exitq3:
+		call draw_esc_button
 		call getchar
 		cmp al, 27
 	je menu
 jmp exitq3
-
-
-endl:;função fds de end line
-	mov ax,0x0e0a
-	int 10h
-	mov al,0x0d
-	int 10h
-	ret
-
 
 
 fourth_cursor:;quarta questão
@@ -937,28 +707,10 @@ init_q5:;quinta questão
 	call loading_app
 	call initVideo
 
-	
-    xor ax,ax
-    xor bx,bx 
-
-    mov ah,00h
-    mov al,13h
-    int 10h
-    
-	xor ax,ax
-
-    mov bh,0
-    mov bl,0xf
-    
-    mov di, numeroLido
-    call get_input
-
-    mov si, numeroLido
-    call stoi  
-
-    setText 1, 0, stringImpressa, ax
+	call _questao5
 
 	exitq5:
+		call draw_esc_button
 		call getchar
 		cmp al, 27
 	je menu
@@ -1084,23 +836,18 @@ data:;aqui é onde eu coloquei os nomes nas caixas de seleção
 	; Questão 2
 
 	; Questão 3
-	string db 0, 0
-	string1 db "Digite os valores de X, Y, Z e W, respectivamente, para entao efetuar o calculo de (X*Y)+(Z*W)-(X/Z)+(W/Y) e retornar se seu resultado e par ou impar." , 0
-	string2 db " -> Par" , 0
-	string3 db " -> Impar" , 0
-	string4 db "Resultado: " , 0
+
 	; Questão 4
 
 	; Questão 5
-		stringImpressa db "Como e facil trocar a cor", 0
-		numeroLido db 0,0,0
+	
 	; About
 	;nosso grupin bala
 	spec db 'SO Specs', 0
 	nomePc db 'Nome do PC', 0                       
 	nomePc1 db 'manguinha', 0
 	empresa db 'Empresa', 0
-	empresa1 db 'MangaCoorp', 0
+	empresa1 db 'MangaCorp', 0
 	edicao db 'Versao da maquina', 0
 	edicao1 db '1.20.1', 0
 	grupo db 'Grupo responsavel',0

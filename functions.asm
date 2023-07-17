@@ -1,6 +1,37 @@
+%macro setText 4
+	mov ah, 02h  
+	mov bh, 0    
+	mov dh, %1   
+	mov dl, %2   
+	int 10h
+	mov bx, %4
+	mov si, %3
+	call printf_color
+%endmacro
+
+%macro simplePrintf 2
+	mov bx, %2
+	mov si, %1
+	call printf_color
+%endmacro
+
+%macro getInput 0
+    pusha
+        mov bx,lightGrey
+        call get_input
+    popa
+%endmacro
+
+%macro setOutput 0
+    pusha
+        mov bx,lightGrey
+        call putchar
+    popa
+%endmacro
+
 gets:
     xor cx, cx
-    .loop1
+    .loop1:
         call getchar
         cmp al, 0x08
         je .backspace
@@ -125,3 +156,51 @@ tostring:
         stosb
         call reverse
 ret
+
+comp:
+    xor bl,bl
+    xor cl,cl
+    .loop1:
+    lodsb
+
+    cmp al, 0 ;checar pelo fim da string
+    je .end_count
+
+    cmp al, dl
+    je .equal2 
+    jne .next_char
+    jmp .loop1
+
+    .equal2:
+        inc bl ;tamanho da string
+        inc cl ;quantas ocorrencias
+        jmp .loop1
+
+    .next_char:
+        inc bl ;tamanho da string
+        jmp .loop1
+
+    .end_count: ;erro aqui?
+        xor al,al
+
+        mov al,cl
+        add al,48
+        pusha
+        mov bl,7
+        call putchar
+        popa
+
+        mov al, '/'
+        pusha
+        mov bl,7
+        call putchar
+        popa
+        
+        mov al, bl
+        add al,48
+        pusha
+        mov bl,7
+        call putchar
+        popa
+
+    ret
