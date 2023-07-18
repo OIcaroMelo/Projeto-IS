@@ -29,6 +29,105 @@
     popa
 %endmacro
 
+%macro drawer 1
+	mov ah, 0ch 
+	mov al, %1
+	mov bh, 0
+%endmacro
+
+%macro drawSquare 4
+	mov cx, %1
+	.draw_rows:
+		mov dx, %2
+		int 10h
+		mov dx, %4
+		int 10h
+		inc cx
+		cmp cx, %3
+		je .end_column
+		jmp .draw_rows
+	.end_column:
+		mov dx, %2
+	.draw_columns:
+		mov cx, %1
+		int 10h
+		mov cx, %3
+		int 10h
+		inc dx
+		cmp dx, %4
+    jne .draw_columns
+%endmacro
+
+%macro drawCursor 4
+	mov cx, %1
+	.draw_seg:
+		mov dx, %3-1
+		int 10h
+		mov dx, %3
+		int 10h
+		inc cx
+		cmp cx, %4
+		je .end_column
+		jmp .draw_seg
+	.end_column:
+		mov dx, %2
+	.draw_columns:
+		mov cx, %4-2
+		int 10h
+		mov cx, %4-1
+		int 10h
+		inc dx
+		cmp dx, %3
+	jne .draw_columns
+%endmacro
+
+%macro position 2
+	push dx
+	push cx
+	mov ah, 0ch
+	add dx, %1
+	add cx, %2
+	int 10h
+	pop cx
+	pop dx
+%endmacro
+
+%macro blackBackgroundApp 4
+	mov ah, 0ch 
+	mov al, blackColor
+	mov bh, 0
+	mov cx, %1
+	mov dx, %2
+	.draw_seg:
+		int 10h
+		inc cx
+		cmp cx, %3
+		je .jump_row
+		jne .draw_seg
+	.back_column:
+		mov cx, %1
+		jmp .draw_seg
+	.jump_row:
+		inc dx
+		cmp dx, %4
+		jne .back_column
+	mov al, whiteColor
+%endmacro
+
+%macro setColor 1
+  mov ah, 0ch
+	mov bh, 0
+	mov al, %1
+	int 10h
+%endmacro
+
+%macro setBackground 1
+	mov ah, 0x0
+	mov bh, 0
+	mov bl, %1
+	int 10h
+%endmacro
+
 gets:
     xor cx, cx
     .loop1:
@@ -65,7 +164,7 @@ ret
 putchar:
     mov ah, 0x0e
     int 10h
-    ret
+ret
 
 delchar:
     mov al, 0x08
@@ -74,7 +173,7 @@ delchar:
     call putchar
     mov al, 0x08
     call putchar
-    ret
+ret
 
 endl:
     mov al, 0x0a
@@ -157,13 +256,83 @@ tostring:
         call reverse
 ret
 
+_fix:
+    cmp al, 118
+    jae .fix1
+    cmp al, 108
+    jae .fix2
+    cmp al, 98
+    jae .fix3
+    cmp al, 88
+    jae .fix4
+    cmp al, 78
+    jae .fix5
+    cmp al, 68
+    jae .fix6
+    cmp al, 58
+    jae .fix7
+    .normal:
+        setOutput
+        jmp .done2
+    .fix1:
+        push ax
+        mov ax, 55
+        setOutput
+        pop ax
+        sub al, 70
+        jmp .normal
+    .fix2:
+        push ax
+        mov ax, 54
+        setOutput
+        pop ax
+        sub al, 60
+        jmp .normal
+    .fix3:
+        push ax
+        mov ax, 53
+        setOutput
+        pop ax
+        sub al, 50
+        jmp .normal
+    .fix4:
+        push ax
+        mov ax, 52
+        setOutput
+        pop ax
+        sub al, 40
+        jmp .normal
+    .fix5:
+        push ax
+        mov ax, 51
+        setOutput
+        pop ax
+        sub al, 30
+        jmp .normal
+    .fix6:
+        push ax
+        mov ax, 50
+        setOutput
+        pop ax
+        sub al, 20
+        jmp .normal
+    .fix7:
+        push ax
+        mov ax, 49
+        setOutput
+        pop ax
+        sub al, 10
+        jmp .normal
+    .done2:
+        ret
+
 comp:
     xor bl,bl
     xor cl,cl
     .loop1:
     lodsb
 
-    cmp al, 0 ;checar pelo fim da string
+    cmp al, 0
     je .end_count
 
     cmp al, dl
@@ -172,22 +341,22 @@ comp:
     jmp .loop1
 
     .equal2:
-        inc bl ;tamanho da string
-        inc cl ;quantas ocorrencias
+        inc bl
+        inc cl
         jmp .loop1
 
     .next_char:
-        inc bl ;tamanho da string
+        inc bl
         jmp .loop1
 
-    .end_count: ;erro aqui?
+    .end_count:
         xor al,al
 
         mov al,cl
         add al,48
         pusha
         mov bl,7
-        call putchar
+        call _fix
         popa
 
         mov al, '/'
@@ -197,10 +366,10 @@ comp:
         popa
         
         mov al, bl
-        add al,48
+        add al, 48
         pusha
         mov bl,7
-        call putchar
+        call _fix
         popa
 
     ret
