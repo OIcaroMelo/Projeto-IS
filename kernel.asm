@@ -13,11 +13,6 @@ jmp 0x0000:start
 %include "questoes.asm"
 %include "data.asm"
 
-;olá amigo, vamos começar nossa jornada aqui
-;os bagulho ai em cima são algumas definições que usei para pintar a manga e etc
-;esse start ai em baixo só faz carregar a animação bunitinha da manga e tals
-;
-
 start:
 	call initVideo
 	call login
@@ -29,20 +24,17 @@ start:
 	call menu
 jmp $
 
-;esse bagulho de senha foi do projeto de lk
-;então acho que daqui a pouco vou tirar essa merda
-
 get_password:
-	xor cl,cl ;zera variavel cl (sera usada como contador)
+	xor cl,cl
 	loop_get_password:
 		mov ah,0
 		int 16h
-		cmp al,08h ;backspace teclado?
+		cmp al,08h 
 		je key_backspace_password
-		cmp al,0dh ;enter teclado?
+		cmp al,0dh 
 		je key_enter_password
-		cmp cl,0fh ;15 valores ja teclados?
-		je loop_get_password ;só aceita backspace ou enter
+		cmp cl,0fh 
+		je loop_get_password 
 
 		mov byte [di],al
 		inc di
@@ -54,14 +46,14 @@ get_password:
 
 	key_backspace_password:
 		cmp cl,0
-		je loop_get_password ;n faz sentido apagar string vazia
+		je loop_get_password 
 
-		dec di ;volta dl pra o caractere anterior
-		mov byte [di],0 ;zera o valor daquela posicao
-		dec cl ;diminui o contador em 1
+		dec di 
+		mov byte [di],0 
+		dec cl 
 
 		mov ah,0eh
-		mov al,08h ;imprime backspace(volta o cursor)
+		mov al,08h 
 		int 10h
 
 		mov al,' '
@@ -107,63 +99,6 @@ login:
 		call endl
 	jmp comp_pass
 
-;esse drawer só serve pra desenhar
-%macro drawer 1
-	mov ah, 0ch 
-	mov al, %1
-	mov bh, 0
-%endmacro
-
-;esse tbm só desenha
-%macro drawSquare 4
-	mov cx, %1
-	.draw_rows:
-		mov dx, %2
-		int 10h
-		mov dx, %4
-		int 10h
-		inc cx
-		cmp cx, %3
-		je .end_column
-		jmp .draw_rows
-	.end_column:
-		mov dx, %2
-	.draw_columns:
-		mov cx, %1
-		int 10h
-		mov cx, %3
-		int 10h
-		inc dx
-		cmp dx, %4
-    jne .draw_columns
-%endmacro
-
-;mais desenho
-%macro drawCursor 4
-	mov cx, %1
-	.draw_seg:
-		mov dx, %3-1
-		int 10h
-		mov dx, %3
-		int 10h
-		inc cx
-		cmp cx, %4
-		je .end_column
-		jmp .draw_seg
-	.end_column:
-		mov dx, %2
-	.draw_columns:
-		mov cx, %4-2
-		int 10h
-		mov cx, %4-1
-		int 10h
-		inc dx
-		cmp dx, %3
-	jne .draw_columns
-%endmacro
-
-;isso aqui é um mini cursor que fica no canto inferior direito das caixas de seleção
-;basicamente só serve pra vc saber onde vc está
 cursorApp:
 	drawer blackColor
 	call cursor_app1
@@ -187,12 +122,11 @@ printf_color:
 	end_print_string:
 	ret
 
-;aqui é a parte gráfica do menu, onde coloquei questão1 2 3 etc
 menu:
 	call initVideo
-	call draw_logo_background ; Desenha a borda
-	call draw_border ; Escreve nome de cada APP
-	call draw_box_app ; Desenha os retangulos
+	call draw_logo_background 
+	call draw_border 
+	call draw_box_app 
 	setText 1, 16, title, yellowColor
 	setText 6, 3, app1, yellowColor
 	setText 6, 26, app2, yellowColor
@@ -200,7 +134,7 @@ menu:
 	setText 13, 26, app4, yellowColor
 	setText 20, 3, app5, yellowColor
 	setText 20, 28, app6, yellowColor
-	call first_cursor ; Inicia a aplicação
+	call first_cursor 
 
 delay:
 	mov ah, 86h
@@ -216,25 +150,25 @@ fast_delay:
 	ret
 
 endline:
-	mov ah, 02h ; setar o cursor
-	mov bh, 0   ; pagina
+	mov ah, 02h 
+	mov bh, 0   
 	mov dl, 1
 	inc dh
 	int 10h
 jmp teclado
 
 delete_endline:
-	cmp dh, 2 ;Linha inicial
+	cmp dh, 2 
 	je teclado
 
 	mov al, ' '
-	mov ah, 09h ; codigo para printar caractere apenas onde esta o cursor
-	mov bh, 0   ; seta a pagina
-	mov bl, whiteColor  ; seta a cor do caractere, nesse caso, branco
+	mov ah, 09h 
+	mov bh, 0 
+	mov bl, whiteColor 
 	int 10h
 
-	mov ah, 02h ; setar o cursor
-	mov bh, 0   ; pagina
+	mov ah, 02h 
+	mov bh, 0 
 	dec dh
 	mov dl, 100
 	int 10h
@@ -247,22 +181,22 @@ backspace:
 
 	mov al, ' '
 	mov cx, 1
-	mov ah, 09h ; codigo para printar caractere apenas onde esta o cursor
-	mov bh, 0   ; seta a pagina
-	mov bl, whiteColor  ; seta a cor do caractere, nesse caso, branco
+	mov ah, 09h 
+	mov bh, 0   
+	mov bl, whiteColor 
 	int 10h
 
-	mov ah, 02h ; setar o cursor
-	dec dl ; coluna --
-	mov bh, 0   ; pagina
+	mov ah, 02h 
+	dec dl 
+	mov bh, 0 
 	int 10h
 
 jmp teclado
 
 
 teclado:
-	mov ah, 0   ; prepara o ah para a chamada do teclado
-	int 16h     ; interrupcao para ler o caractere e armazena-lo em al
+	mov ah, 0 
+	int 16h 
 
 	cmp al, 8
 	je backspace
@@ -271,18 +205,18 @@ teclado:
 	cmp dl, 100
 	je endline
 	
-	mov ah, 02h ; setar o cursor
-	mov bh, 0   ; pagina
+	mov ah, 02h 
+	mov bh, 0 
 	inc dl
 	int 10h
 
-	mov ah, 09h ; codigo para printar caractere apenas onde esta o cursor
-	mov bh, 0   ; seta a pagina
+	mov ah, 09h 
+	mov bh, 0 
 	int 10h
 
 jmp teclado
 
-strcmp:;di é a constante ;autoexplicativo
+strcmp:
 	strcmp_loop:
 		mov al,byte [di]
 		inc di
@@ -301,17 +235,17 @@ strcmp:;di é a constante ;autoexplicativo
 	strcmp_end:
 	ret
 
-get_input:;autoexplicativo
-	xor cl,cl ;zera variavel cl (sera usada como contador)
+get_input:
+	xor cl,cl 
 	loop_get_input:
 		mov ah,0
 		int 16h
-		cmp al,08h ;backspace teclado?
+		cmp al,08h 
 		je key_backspace_input
-		cmp al,0dh ;enter teclado?
+		cmp al,0dh 
 		je key_enter_input
-		cmp cl,28h ;40 valores ja teclados?
-		je loop_get_input ;só aceita backspace ou enter
+		cmp cl,28h 
+		je loop_get_input 
 
 		mov ah,0eh
 		int 10h
@@ -322,14 +256,14 @@ get_input:;autoexplicativo
 
 	key_backspace_input:
 		cmp cl,0
-		je loop_get_input ; n faz sentido apagar string vazia
+		je loop_get_input 
 
-		dec di ; volta dl pra o caractere anterior
-		mov byte [di],0 ; zera o valor daquela posicao
-		dec cl ; diminui o contador em 1
+		dec di 
+		mov byte [di],0 
+		dec cl 
 
 		mov ah,0eh
-		mov al,08h ; imprime backspace(volta o cursor)
+		mov al,08h 
 		int 10h
 
 		mov al,' '
@@ -351,13 +285,13 @@ get_input:;autoexplicativo
 	ret
 draw_logo:
 	mov si, manga
-	mov dx, 0            ; Y
+	mov dx, 0 
 	mov bx, si
 	add si, 2
 	.for1:
 		cmp dl, byte[bx+1]
 		je .endfor1
-		mov cx, 0        ; X
+		mov cx, 0 
 	.for2:
 		cmp cl, byte[bx]
 		je .endfor2
@@ -378,30 +312,19 @@ draw_logo:
 	.endfor1:
 	ret
 
-%macro position 2
-	push dx
-	push cx
-	mov ah, 0ch
-	add dx, %1
-	add cx, %2
-	int 10h
-	pop cx
-	pop dx
-%endmacro
-
 manga_positions:
 	position 25, 141
 	ret
 
 draw_logo_background: 
 	mov si, manga
-	mov dx, 0            ; Y
+	mov dx, 0 
 	mov bx, si
 	add si, 2
 	.for1:
 		cmp dl, byte[bx+1]
 		je .endfor1
-		mov cx, 0        ; X
+		mov cx, 0 
 	.for2:
 		cmp cl, byte[bx]
 		je .endfor2
@@ -415,29 +338,6 @@ draw_logo_background:
 	.endfor1:
 	ret
 
-%macro blackBackgroundApp 4
-	mov ah, 0ch 
-	mov al, blackColor
-	mov bh, 0
-	mov cx, %1
-	mov dx, %2
-	.draw_seg:
-		int 10h
-		inc cx
-		cmp cx, %3
-		je .jump_row
-		jne .draw_seg
-	.back_column:
-		mov cx, %1
-		jmp .draw_seg
-	.jump_row:
-		inc dx
-		cmp dx, %4
-		jne .back_column
-	mov al, whiteColor ; Voltando a cor original
-%endmacro
-
-;aqui são as caixas onde ficam os nomes questao 1 2 3 etc
 box_app1: 
 	drawSquare 20, 145, 100, 180
 	blackBackgroundApp 21, 146, 100, 180
@@ -458,7 +358,6 @@ box_app6:
 	blackBackgroundApp 21, 91, 100, 125
 ret
 
-;isso aqui desenha a caixa
 draw_box_app:
 	drawer whiteColor
 	call box_app1
@@ -514,7 +413,6 @@ draw_white_border:
 		jne .draw_columns
 	ret
 
-;isso aqui é aquele cursor que falei anteriormente
 cursor_app1: 
 	drawCursor 85, 54, 67, 98
 cursor_app2:
@@ -529,7 +427,6 @@ cursor_app6:
 	drawCursor 265, 164, 177, 278
 ret
 
-;isso aqui é animação fofa de carregar a manga
 loading_app:
 	call initVideo
 	call draw_logo
@@ -543,9 +440,7 @@ exitq:
 	cmp al, 27
 	je menu
 	jmp exitq
-;aqui que começa os bagulho tenso
-;basicamente são seis "cursores", cada um deles está associado a uma caixa de seleção de questão
-;ou seja, first_cursor está associado à questão1
+
 first_cursor:
 	call cursorApp
 	drawCursor 85, 54, 67, 98
@@ -553,7 +448,7 @@ first_cursor:
   call getchar
 
   cmp al, 13
-	je init_q1 ;isso aqui é o inicializador da questão1, vai ser nessa função init que o código da questão vai entrar
+  je init_q1 
 	cmp al, 'w'
   je third_cursor
 	cmp al, 'a'
@@ -566,27 +461,21 @@ first_cursor:
   jmp first_cursor
 ret
 
-;é aqui onde vcs vão colocar o código da questão 1
 init_q1:
-	call loading_app;isso aqui é o gráfico fofo da manga
+	call loading_app
 	call initVideo
-	;call draw_mango;manga fofa
-	;call draw_esc_button;isso aqui é só um botão de esc, puramente estético
-
-    ;------ coloque o código abaixo desse linha -------
-
-    ;------ final da questão ------
+	
 	call _questao1
 	jmp exitq
 
-second_cursor:;aqui é o cursor da segunda questão
+second_cursor:
 	call cursorApp
 	drawCursor 85, 109, 122, 98
 
   call getchar
 
   cmp al, 13
-	je init_q2;inicializador
+	je init_q2
 	cmp al, 'w'
   je first_cursor
 	cmp al, 'a'
@@ -599,16 +488,14 @@ second_cursor:;aqui é o cursor da segunda questão
   jmp second_cursor
 ret
 
-init_q2:;segunda questão
+init_q2:
 	call loading_app
 	call initVideo
-	;call draw_mango
-	call _questao2
 
+	call _questao2
 	jmp exitq
 
-
-third_cursor:;enfim, mesmo esquema, acredito que até aqui esteja dando pra entender
+third_cursor:
 	call cursorApp
 	drawCursor 85, 164, 177, 98
 
@@ -628,18 +515,15 @@ third_cursor:;enfim, mesmo esquema, acredito que até aqui esteja dando pra ente
   jmp third_cursor
 ret
 
-init_q3:;terceira questão
-	
+init_q3:
 	call loading_app
 	call initVideo
-	;call draw_esc_button
-	;call draw_mango
-	;
+
 	call _questao3
 	jmp exitq
 
 
-fourth_cursor:;quarta questão
+fourth_cursor:
 	call cursorApp
 	drawCursor 265, 54, 67, 278
 
@@ -659,18 +543,14 @@ fourth_cursor:;quarta questão
   jmp fourth_cursor
 ret
 
-init_q4:;quarta questão
+init_q4:
 	call loading_app
 	call initVideo
-	;call draw_mango
-
 
 	call _questao4
-	call draw_esc_button
-
 	jmp exitq
 
-fifth_cursor:;quinta questão
+fifth_cursor:
 	call cursorApp
 	drawCursor 265, 109, 122, 278
 
@@ -690,15 +570,14 @@ fifth_cursor:;quinta questão
   jmp fifth_cursor
 ret
 
-init_q5:;quinta questão
+init_q5:
 	call loading_app
 	call initVideo
 
 	call _questao5
-
 	jmp exitq
 
-sixth_cursor:;esse aqui é um menu que mostra as informações gerais do SO
+sixth_cursor:
 	call cursorApp
 	drawCursor 265, 164, 177, 278
 
@@ -717,8 +596,7 @@ sixth_cursor:;esse aqui é um menu que mostra as informações gerais do SO
   jmp sixth_cursor
 ret
 
-about_app:;então por exemplo, coloquei os nossos nomes, o nome do PC, o nome da empresa etc
-;é só estético msm, pra ficar fofo
+about_app:
 	call initVideo
 	setText 1, 16, spec, yellowColor
 	setText 4, 3, nomePc, yellowColor
@@ -752,7 +630,7 @@ draw_mango:
 			cmp cl, byte[bx]
 			je .endfor2
 			lodsb
-			push dx ; Draw pixel
+			push dx 
 			push cx
 			mov ah, 0ch
 			add dx, 50
@@ -770,13 +648,13 @@ draw_mango:
 
 draw_esc_button:
 	mov si, esc_button
-	mov dx, 0            ; Y
+	mov dx, 0 
 	mov bx, si
 	add si, 2
 	.for1:
 		cmp dl, byte[bx+1]
 		je .endfor1
-		mov cx, 0        ; X
+		mov cx, 0 
 	.for2:
 		cmp cl, byte[bx]
 		je .endfor2
@@ -796,59 +674,7 @@ draw_esc_button:
 		jmp .for1
 	.endfor1:
 	ret
-
-data:;aqui é onde eu coloquei os nomes nas caixas de seleção
-;se quiser mudar fique a vontade
-	; SO interface
-	title db 'MangoOS', 0
-	app1 db 'Questao 1', 0
-	app2 db 'Questao 4', 0
-	app3 db 'Questao 2', 0
-	app4 db 'Questao 5', 0
-	app5 db 'Questao 3', 0
-	app6 db 'About', 0
 	
-	
-;esses bagulho em baixo é caso vcs queiram printar algo na tela quando entrar nas questões
-;de certa forma é desnecessário, então rlx
-
-	
-	; About
-	;nosso grupin bala
-	spec db 'SO Specs', 0
-	nomePc db 'Nome do PC', 0                       
-	nomePc1 db 'manguinha', 0
-	empresa db 'Empresa', 0
-	empresa1 db 'MangaCorp', 0
-	edicao db 'Versao da maquina', 0
-	edicao1 db '1.20.1', 0
-	grupo db 'Grupo responsavel',0
-	grupo1 db 'Icaro Melo', 0
-	grupo2 db 'Isabella Vittori', 0
-	grupo3 db 'Rodrigo Pontes', 0
-
-	ESC db 'ESC', 0
-
-	; Login
-	;bagulho de login, talvez eu tire depois
-	stringusuario db 'Username:', 0
-	string_senha db 'Create Password:',0
-	String_senha2 db 'Confirm password:',0
-	stringwrongpassword db 'Incorrect Password.',0
-	stringpassword times 16 db 0
-	password times 16 db 0
-	
-	stringname times 16 db 0
-	stringinput times 40 db 0
-
-;isso aqui em baixo são os 1050 pixels da manga
-;demorou 2h pra fazer essa merda kkk
-manga db 35, 30, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10, 10, 2, 2, 0, 0 ,0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 2, 2, 10, 10, 10, 10, 10, 10, 10, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 2, 10, 10, 10, 10, 10, 2, 2, 2, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 2, 2, 0, 0, 12, 12, 12, 12, 14, 14, 14, 14, 14, 14, 14, 14, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10, 10, 2, 2, 0, 0, 0, 12, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 12, 14, 14, 15, 15, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 15, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0 ,0 ,0 ,0, 0, 0, 0, 0, 14, 14, 14, 15, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 , 0, 0 , 0 ,0, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 , 0, 0, 0, 0, 14, 14, 14, 15, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0, 14, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 12, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 4, 12, 14, 14, 14, 14, 14, 14, 12, 12, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  
-
-esc_button db 15, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 4, 15, 15, 15, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 4, 15, 12, 4, 4, 15, 15, 15, 4, 15, 15, 15, 4, 0, 0, 4, 15, 15, 15, 4, 15, 12, 4, 4, 15, 4, 4, 4, 0, 0, 4, 15, 4, 4, 4, 15, 15, 15, 4, 15, 4, 4, 4, 0, 0, 4, 15, 4, 4, 4, 4, 4, 15, 4, 15, 4, 4, 4, 0, 0, 12, 15, 15, 15, 4, 15, 15, 15, 4, 15, 15, 15, 12, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-
-
-;algumas funções meio fds
 hold:
 	call getchar
 	cmp al, 27
@@ -858,24 +684,10 @@ hold:
 ret
 
 video:
-	mov ah, 0 ; Set video mode
+	mov ah, 0 
 	mov al, 12h
 	int 10h
 ret
-
-%macro setColor 1
-  mov ah, 0ch
-	mov bh, 0
-	mov al, %1 ; cor
-	int 10h
-%endmacro
-
-%macro setBackground 1
-	mov ah, 0x0
-	mov bh, 0
-	mov bl, %1
-	int 10h
-%endmacro
 
 loading:
 	mov cx, 50
@@ -888,15 +700,15 @@ loading:
 		pop cx
 		cmp cx, 250
 		jne loop_loading
-		mov ah, 86h; INT 15h / AH = 86h
+		mov ah, 86h 
 		mov cx, 1	
-		xor dx, dx ;CX:DX = interval in microseconds
+		xor dx, dx 
 		mov dx, 5	
 		int 15h
 	ret
 
 loading_unit_off:
-	mov ax,0x0c00 ;Write graphics pixel, preto
+	mov ax,0x0c00 
 	mov bh,0x00
 	mov dx, 160
 	loop_loading_unit_off:
@@ -907,7 +719,7 @@ loading_unit_off:
 	ret 
 
 loading_limit:
-	mov ax,0x0c0f ;Write graphics pixel,white
+	mov ax,0x0c0f 
 	mov bh,0x00
 	mov dx, 160
 	loop_loading_limit:
@@ -921,7 +733,7 @@ loading_limit:
 	ret
 
 loading_unit:
-	mov ax,0x0c0e ;Write graphics pixel, amarelo
+	mov ax,0x0c0e 
 	mov bh,0x00
 	mov dx, 160
 	loop_loading_unit:
@@ -930,4 +742,3 @@ loading_unit:
 		cmp dx, 170
 		jne loop_loading_unit
 	ret 
-;acabou :)
