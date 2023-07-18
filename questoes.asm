@@ -38,13 +38,16 @@ _questao1:
     mov bx, 11
     div bx
     mov ax, dx
+    push ax
+    setText 7, 0, stringResult, 7
+    pop ax
     cmp ax, 10
     je .print10
     add ax, 48
     setOutput
     jmp .done5
     .print10:
-        setText 7, 0, printf10, lightGrey
+        setText 7, 11, printf10, lightGrey
         jmp .done5
     .done5:
         setText 8, 0, vazio, lightGrey
@@ -124,29 +127,28 @@ _questao3:
     div bx
     push dx
 
-    setText 10, 0, string4, lightGrey
+    setText 11, 0, stringResult, lightGrey
     pop dx
     pop ax
 	push dx
 	add ax, 48
-    setOutput
+    call _fix
 
     pop dx
     cmp dx, 1
     je .diff
     .equal:
-        setText 10, 13, string2, lightGrey
+        setText 11, 13, string2, lightGrey
         ret
     .diff:
-		setText 10, 13, string3, lightGrey
+		setText 11, 13, string3, lightGrey
         ret
 
 _questao4:
-    _start:
     setText 2, 0, enunciado4, lightGrey
     call endl
     
-    mov di,stringImpressa
+    mov di,stringImpressa2
     getInput
         
     xor ax,ax
@@ -155,8 +157,22 @@ _questao4:
     xor dx,dx
     mov es,ax
     mov ds,ax
+
+    push ax
+    push bx
+    push cx
+    push dx
+    push es
+    push ds
+    setText 8, 0, stringResult, 7
+    pop ds
+    pop es
+    pop dx
+    pop cx
+    pop bx
+    pop ax
     
-    mov si,stringImpressa
+    mov si,stringImpressa2
     push bx
     _loopNovo:
         cmp cx,2
@@ -174,50 +190,43 @@ _questao4:
         inc cx
     jmp _loopNovo
 
-       
-_enter:
-    cmp al,10
-        jae _div
-    
-    pop bx
-    add ax,bx    
-    push ax
-
-    xor ax, ax
-
-    inc si
-    inc cx
-
-    cmp cx,11
-        jne _loopNovo
-    jmp _end
- 
-_div:
-    mov dl,10
-    div dl
-    add al,ah   
-    xor ah,ah
-
-    cmp cx,11
-        jne _enter
-    jmp _here
-    
-_end:
-    pop ax
-    _here:
-        cmp ax,10
+    _enter:
+        cmp al,10
             jae _div
-        add al,48
-        setOutput 
-        ret
-_questao5:
+        
+        pop bx
+        add ax,bx    
+        push ax
+
+        xor ax, ax
+
+        inc si
+        inc cx
+
+        cmp cx,11
+            jne _loopNovo
+        jmp _end
     
-    xor ax,ax
-    xor bx,bx
-    xor cx,cx
-    xor dx,dx
-    mov es,ax
-    mov ds,ax
+    _div:
+        mov dl,10
+        div dl
+        add al,ah   
+        xor ah,ah
+
+        cmp cx,11
+            jne _enter
+        jmp _here
+        
+    _end:
+        pop ax
+        _here:
+            cmp ax,10
+                jae _div
+            add al,48
+            setOutput 
+            ret
+
+_questao5:
     
     setText 2, 0, enunciado5, lightGrey
     call endl
@@ -227,6 +236,6 @@ _questao5:
     mov si, numeroLido
     call stoi  
 
-    setText 6, 0, stringImpressa2, ax
+    setText 6, 0, stringImpressa, ax
 
     ret
