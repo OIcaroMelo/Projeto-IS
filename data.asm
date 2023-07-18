@@ -17,11 +17,11 @@ string4 db "Resultado: " , 0
 resultado3 db 0, 0, 0, 0
 	; Questão 4
 enunciado4 db "Digite uma data para calcular o numero que representa essa data na numerologia(para isso sera somado todos os algarismos da data, e das somas subsequentes,ate termos um numero entre 1-9)", 0
-
+stringImpressa times 11 db 0 
 
 	; Questão 5
 enunciado5 db "Digite um numero de 0 a 15 para printar uma frase de acordo com a lista de cores da BIOS." , 0
-stringImpressa db "Como e facil trocar a cor", 0
+stringImpressa2 db "Como e facil trocar a cor", 0
 numeroLido db 0,0,0
 
 

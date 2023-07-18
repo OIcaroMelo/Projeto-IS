@@ -212,6 +212,13 @@ _end:
         ret
 _questao5:
     
+    xor ax,ax
+    xor bx,bx
+    xor cx,cx
+    xor dx,dx
+    mov es,ax
+    mov ds,ax
+    
     setText 2, 0, enunciado5, lightGrey
     call endl
     
@@ -220,6 +227,6 @@ _questao5:
     mov si, numeroLido
     call stoi  
 
-    setText 6, 0, stringImpressa, ax
+    setText 6, 0, stringImpressa2, ax
 
     ret
