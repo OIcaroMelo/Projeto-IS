@@ -57,10 +57,10 @@ gets:
         call endl
 ret
 
-;getchar:
-;    mov ah, 0x00
-;    int 16h
-;ret
+getchar:
+    mov ah, 0x00
+    int 16h
+ret
 
 putchar:
     mov ah, 0x0e
@@ -76,12 +76,12 @@ delchar:
     call putchar
     ret
 
-;endl:
-;    mov al, 0x0a
-;    call putchar
-;    mov al, 0x0d
-;    call putchar
-;ret
+endl:
+    mov al, 0x0a
+    call putchar
+    mov al, 0x0d
+    call putchar
+ret
 
 stoi:
     xor cx, cx

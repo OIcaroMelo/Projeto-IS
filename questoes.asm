@@ -141,6 +141,75 @@ _questao3:
 		setText 10, 13, string3, lightGrey
         ret
 
+_questao4:
+    _start:
+    setText 2, 0, enunciado4, lightGrey
+    call endl
+    
+    mov di,stringImpressa
+    getInput
+        
+    xor ax,ax
+    xor bx,bx
+    xor cx,cx
+    xor dx,dx
+    mov es,ax
+    mov ds,ax
+    
+    mov si,stringImpressa
+    push bx
+    _loopNovo:
+        cmp cx,2
+            je _enter
+        cmp cx,5
+            je _enter
+        cmp cx,10
+            je _enter
+        
+        mov bl,byte[si]
+        sub bl,48
+        add al,bl
+
+        inc si
+        inc cx
+    jmp _loopNovo
+
+       
+_enter:
+    cmp al,10
+        jae _div
+    
+    pop bx
+    add ax,bx    
+    push ax
+
+    xor ax, ax
+
+    inc si
+    inc cx
+
+    cmp cx,11
+        jne _loopNovo
+    jmp _end
+ 
+_div:
+    mov dl,10
+    div dl
+    add al,ah   
+    xor ah,ah
+
+    cmp cx,11
+        jne _enter
+    jmp _here
+    
+_end:
+    pop ax
+    _here:
+        cmp ax,10
+            jae _div
+        add al,48
+        setOutput 
+        ret
 _questao5:
     
     setText 2, 0, enunciado5, lightGrey

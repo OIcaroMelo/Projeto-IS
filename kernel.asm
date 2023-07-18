@@ -537,6 +537,12 @@ loading_app:
 	call loading
 ret
 
+exitq:
+	call draw_esc_button
+	call getchar
+	cmp al, 27
+	je menu
+	jmp exitq
 ;aqui que começa os bagulho tenso
 ;basicamente são seis "cursores", cada um deles está associado a uma caixa de seleção de questão
 ;ou seja, first_cursor está associado à questão1
@@ -571,12 +577,7 @@ init_q1:
 
     ;------ final da questão ------
 	call _questao1
-	exitq1: ;isso aqui serve pra checar de o usuário apertou esc, se sim ele volta para o menu
-		call draw_esc_button
-		call getchar
-		cmp al, 27
-	je menu
-jmp exitq1
+	jmp exitq
 
 second_cursor:;aqui é o cursor da segunda questão
 	call cursorApp
@@ -604,12 +605,7 @@ init_q2:;segunda questão
 	;call draw_mango
 	call _questao2
 
-	exitq2:
-		call draw_esc_button
-		call getchar
-		cmp al, 27
-	je menu
-jmp exitq2
+	jmp exitq
 
 
 third_cursor:;enfim, mesmo esquema, acredito que até aqui esteja dando pra entender
@@ -640,12 +636,7 @@ init_q3:;terceira questão
 	;call draw_mango
 	;
 	call _questao3
-	exitq3:
-		call draw_esc_button
-		call getchar
-		cmp al, 27
-	je menu
-jmp exitq3
+	jmp exitq
 
 
 fourth_cursor:;quarta questão
@@ -671,17 +662,13 @@ ret
 init_q4:;quarta questão
 	call loading_app
 	call initVideo
-	call draw_mango
+	;call draw_mango
 
 
-
+	call _questao4
 	call draw_esc_button
 
-	exitq4:
-		call getchar
-		cmp al, 27
-	je menu
-jmp exitq4
+	jmp exitq
 
 fifth_cursor:;quinta questão
 	call cursorApp
@@ -709,12 +696,7 @@ init_q5:;quinta questão
 
 	call _questao5
 
-	exitq5:
-		call draw_esc_button
-		call getchar
-		cmp al, 27
-	je menu
-jmp exitq5
+	jmp exitq
 
 sixth_cursor:;esse aqui é um menu que mostra as informações gerais do SO
 	call cursorApp
@@ -830,16 +812,6 @@ data:;aqui é onde eu coloquei os nomes nas caixas de seleção
 ;esses bagulho em baixo é caso vcs queiram printar algo na tela quando entrar nas questões
 ;de certa forma é desnecessário, então rlx
 
-	; Questão 1
-	valor db 0, 0, 0, 0
-	valor2 db 0, 0, 0, 0
-	; Questão 2
-
-	; Questão 3
-
-	; Questão 4
-
-	; Questão 5
 	
 	; About
 	;nosso grupin bala
