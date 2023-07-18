@@ -1,34 +1,59 @@
-	; Questão 1
 printf10 db "10" , 0
 valor db 0, 0, 0, 0
 valor2 db 0, 0, 0, 0
 vazio db "" , 0
-enunciado1 db "Digite um numero n para calcular o n-esimo termo da sequencia de fibbonacci, x. O programa consiste em fazer a operacao x(mod 11) e printar seu resultado." , 0
-	; Questão 2
+enunciado1 db "Digite um numero n para calcular o termo n da sequencia de fibbonacci, x.       O programa consiste em fazer a operacao x(mod 11) e printar seu resultado." , 0
+
 menor: times 100 db 0
 maior: times 100 db 0
-enunciado2 db "Digite uma palavra e em segida digite uma letra para saber a frequencia dessa letra na palavra" , 0
-	; Questão 3
+enunciado2 db "Digite uma palavra e em segida digite   uma letra para saber a frequencia dessa letra na palavra" , 0
+
 string db 0, 0
-enunciado3 db "Digite os valores de X, Y, Z e W, respectivamente, para entao efetuar o calculo de (X*Y)+(Z*W)-(X/Z)+(W/Y) e retornar se seu resultado e par ou impar." , 0
+enunciado3 db "Digite os valores de X, Y, Z e W, 0 < X,Y,Z,W < 7 (X >= Z e W >= Y), para entao efetuar o calculo de (X*Y)+(Z*W)-(X/Z)+ (W/Y) e retornar se seu resultado e par ou impar." , 0
 string2 db " -> Par" , 0
 string3 db " -> Impar" , 0
-string4 db "Resultado: " , 0
+stringResult db "Resultado: " , 0
 resultado3 db 0, 0, 0, 0
-	; Questão 4
-enunciado4 db "Digite uma data para calcular o numero que representa essa data na numerologia(para isso sera somado todos os algarismos da data, e das somas subsequentes,ate termos um numero entre 1-9)", 0
-stringImpressa times 11 db 0 
 
-	; Questão 5
+enunciado4 db "Digite uma data para calcular o numero  que representa essa data na numerologia (serao somados todos os algarismos da   data, e das somas subsequentes, ate     termos um numero entre 1-9)", 0
+stringImpressa2 times 11 db 0 
+
 enunciado5 db "Digite um numero de 0 a 15 para printar uma frase de acordo com a lista de cores da BIOS." , 0
-stringImpressa2 db "Como e facil trocar a cor", 0
+stringImpressa db "Como e facil trocar a cor", 0
 numeroLido db 0,0,0
 
+title db 'MangoOS', 0
+app1 db 'Questao 1', 0
+app2 db 'Questao 4', 0
+app3 db 'Questao 2', 0
+app4 db 'Questao 5', 0
+app5 db 'Questao 3', 0
+app6 db 'About', 0
 
+spec db 'SO Specs', 0
+nomePc db 'Nome do PC', 0                       
+nomePc1 db 'manguinha', 0
+empresa db 'Empresa', 0
+empresa1 db 'MangaCorp', 0
+edicao db 'Versao da maquina', 0
+edicao1 db '1.20.1', 0
+grupo db 'Grupo responsavel',0
+grupo1 db 'Icaro Melo', 0
+grupo2 db 'Isabella Vittori', 0
+grupo3 db 'Rodrigo Pontes', 0
 
+ESC db 'ESC', 0
 
+stringusuario db 'Username:', 0
+string_senha db 'Create Password:',0
+String_senha2 db 'Confirm password:',0
+stringwrongpassword db 'Incorrect Password.',0
+stringpassword times 16 db 0
+password times 16 db 0
 
+stringname times 16 db 0
+stringinput times 40 db 0
 
+manga db 35, 30, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10, 10, 2, 2, 0, 0 ,0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 2, 2, 10, 10, 10, 10, 10, 10, 10, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 2, 10, 10, 10, 10, 10, 2, 2, 2, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10, 10, 10, 2, 2, 0, 0, 12, 12, 12, 12, 14, 14, 14, 14, 14, 14, 14, 14, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10, 10, 2, 2, 0, 0, 0, 12, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 12, 14, 14, 15, 15, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 15, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0 ,0 ,0 ,0, 0, 0, 0, 0, 14, 14, 14, 15, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 , 0, 0 , 0 ,0, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 , 0, 0, 0, 0, 14, 14, 14, 15, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0, 14, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 12, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 4, 12, 14, 14, 14, 14, 14, 14, 12, 12, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  
 
-
-
+esc_button db 15, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 4, 15, 15, 15, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 4, 15, 12, 4, 4, 15, 15, 15, 4, 15, 15, 15, 4, 0, 0, 4, 15, 15, 15, 4, 15, 12, 4, 4, 15, 4, 4, 4, 0, 0, 4, 15, 4, 4, 4, 15, 15, 15, 4, 15, 4, 4, 4, 0, 0, 4, 15, 4, 4, 4, 4, 4, 15, 4, 15, 4, 4, 4, 0, 0, 12, 15, 15, 15, 4, 15, 15, 15, 4, 15, 15, 15, 12, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
